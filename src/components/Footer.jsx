@@ -208,8 +208,11 @@ export default function Footer({ onOpenEnquiry }) {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>
+          <div className="text-center sm:text-left space-y-1.5">
             <p>© {currentYear} Vardhan Media. All Rights Reserved.</p>
+            <p className="text-slate-400">
+              Developed with ❤️ by <span className="text-white font-semibold">[VARDHANMEDIA]</span> • Digital Growth. Powerful Branding. Real Business Results
+            </p>
           </div>
           <div className="flex items-center gap-6">
             <a href="#home" className="hover:text-slate-300 transition-colors">Home</a>
