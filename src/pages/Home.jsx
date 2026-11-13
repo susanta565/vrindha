@@ -25,6 +25,7 @@ import {
   Layers,
   Video,
   Target,
+  Compass,
   Share2,
   TrendingUp,
   Headphones,
@@ -726,6 +727,43 @@ export default function Home({ onOpenEnquiry, onOpenSearch }) {
               </p>
               <p className="text-slate-400 text-sm sm:text-base">
                 From social media management to brand promotion, video production and digital advertising, we provide complete digital solutions under one roof.
+              </p>
+            </div>
+          </div>
+
+          {/* ========================================================= */}
+          {/* OUR MISSION & OUR VISION SECTIONS                         */}
+          {/* ========================================================= */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+            {/* OUR MISSION */}
+            <div className="glass-card-neo p-8 sm:p-10 rounded-3xl relative overflow-hidden group border border-purple-500/20 hover:border-purple-400/50 transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Target className="w-7 h-7" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-purple-300 block mb-2">
+                Our Purpose
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
+                OUR MISSION
+              </h3>
+              <p className="text-slate-300 text-base leading-relaxed">
+                To empower businesses with effective digital marketing solutions that improve online visibility, brand awareness and customer engagement.
+              </p>
+            </div>
+
+            {/* OUR VISION */}
+            <div className="glass-card-neo p-8 sm:p-10 rounded-3xl relative overflow-hidden group border border-amber-500/20 hover:border-amber-400/50 transition-all">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Compass className="w-7 h-7" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block mb-2">
+                Our Future
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
+                OUR VISION
+              </h3>
+              <p className="text-slate-300 text-base leading-relaxed">
+                To become a trusted digital marketing agency known for creativity, innovation and helping businesses build a strong digital identity.
               </p>
             </div>
           </div>

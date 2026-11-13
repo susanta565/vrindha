@@ -44,7 +44,7 @@ export default function About({ onOpenEnquiry }) {
         <div className="text-center max-w-4xl mx-auto mb-20 space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>PAGE 2 – ABOUT US</span>
+            <span>ABOUT US • VARDHAN MEDIA</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight">
@@ -70,40 +70,46 @@ export default function About({ onOpenEnquiry }) {
 
 
         {/* ========================================================= */}
-        {/* MISSION & VISION DUAL CARDS                              */}
+        {/* OUR MISSION & OUR VISION SECTIONS                         */}
         {/* ========================================================= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
           
           {/* Mission Card */}
-          <div className="glass-card p-8 sm:p-10 rounded-3xl border border-slate-800/80 relative overflow-hidden group">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-6">
-              <Target className="w-7 h-7" />
+          <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-950/20 via-slate-900/60 to-slate-950/80 relative overflow-hidden group shadow-2xl hover:border-purple-400/40 transition-all">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-purple-500/15 transition-all" />
+            <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Target className="w-7 h-7" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-purple-300 block mb-2">
+                Our Purpose
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
+                OUR MISSION
+              </h2>
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
+                To empower businesses with effective digital marketing solutions that improve online visibility, brand awareness and customer engagement.
+              </p>
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
-              Our Purpose
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-4">
-              OUR MISSION
-            </h2>
-            <p className="text-slate-300 text-base leading-relaxed">
-              To empower businesses with effective digital marketing solutions that improve online visibility, brand awareness and customer engagement.
-            </p>
           </div>
 
           {/* Vision Card */}
-          <div className="glass-card p-8 sm:p-10 rounded-3xl border border-slate-800/80 relative overflow-hidden group">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center mb-6">
-              <Compass className="w-7 h-7" />
+          <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 via-slate-900/60 to-slate-950/80 relative overflow-hidden group shadow-2xl hover:border-amber-400/40 transition-all">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-500/15 transition-all" />
+            <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Compass className="w-7 h-7" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-300 block mb-2">
+                Our Future
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
+                OUR VISION
+              </h2>
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
+                To become a trusted digital marketing agency known for creativity, innovation and helping businesses build a strong digital identity.
+              </p>
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-rose-400">
-              Our Aspiration
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-4">
-              OUR VISION
-            </h2>
-            <p className="text-slate-300 text-base leading-relaxed">
-              To become a trusted digital marketing agency known for creativity, innovation and helping businesses build a strong digital identity.
-            </p>
           </div>
 
         </div>
