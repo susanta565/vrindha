@@ -165,7 +165,7 @@ export default function Footer({ onOpenEnquiry }) {
               ))}
               <li>
                 <Link to="/services" className="text-purple-300 text-xs font-semibold hover:underline">
-                  View All 8 Services →
+                  View All Services →
                 </Link>
               </li>
             </ul>

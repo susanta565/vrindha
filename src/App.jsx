@@ -12,6 +12,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Work from './pages/Work';
 import Contact from './pages/Contact';
+import ElectionCampaign from './pages/ElectionCampaign';
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +53,7 @@ export default function App() {
             />
             <Route path="/about" element={<About onOpenEnquiry={handleOpenEnquiry} />} />
             <Route path="/services" element={<Services onOpenEnquiry={handleOpenEnquiry} />} />
+            <Route path="/election-campaign" element={<ElectionCampaign onOpenEnquiry={handleOpenEnquiry} />} />
             <Route path="/work" element={<Work onOpenEnquiry={handleOpenEnquiry} />} />
             <Route path="/contact" element={<Contact />} />
             {/* Catch-all fallback */}

@@ -193,6 +193,27 @@ export const siteData = {
         "Royalty Collection & Performance Analytics",
         "Music Video & Single Promotional Campaigns"
       ]
+    },
+    {
+      id: "political-campaign-management",
+      title: "Political & Election Campaign Management",
+      category: "Political Marketing & Election Campaign Management",
+      tagline: "Build political visibility and digital engagement through strategic campaign marketing.",
+      shortDesc: "Vardhan Media provides professional digital marketing solutions for political campaigns, helping candidates build their digital presence through creative content, social media management, video production and strategic communication.",
+      fullDesc: "Vardhan Media provides professional digital marketing solutions for political campaigns, helping candidates build their digital presence through creative content, social media management, video production and strategic communication.",
+      platforms: "Facebook, Instagram, YouTube, WhatsApp Broadcasts, Digital Portals & Candidate Websites.",
+      icon: "Vote",
+      badge: "Election Specialist",
+      complianceNotice: "Important: Follow applicable Election Commission of India rules, advertising disclosure requirements, platform political-ad policies and restrictions on misleading content.",
+      deliverables: [
+        "Social Media Campaigns – Facebook, Instagram and YouTube.",
+        "Political Poster Design – Digital posters, banners and creatives.",
+        "Video Production – Campaign videos, promotional reels and interviews.",
+        "Digital Advertising – Compliant political advertising.",
+        "Personal Branding – Candidate profile and online presence.",
+        "Website Development – Professional websites for candidates.",
+        "Campaign Analytics – Track reach, engagement and campaign performance."
+      ]
     }
   ],
   whoWeWorkWith: [
@@ -225,6 +246,11 @@ export const siteData = {
       title: "Local Brands & Enterprises",
       desc: "Local retailers, restaurants, educational institutes, and lifestyle businesses dominating their local territory.",
       icon: "Store"
+    },
+    {
+      title: "Political Leaders & Campaign Candidates",
+      desc: "Electoral candidates, constituency leaders, and public representatives building verified voter outreach, digital visibility, and strategic communication.",
+      icon: "Vote"
     }
   ],
   approach: [

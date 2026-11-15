@@ -495,7 +495,7 @@ export default function Home({ onOpenEnquiry, onOpenSearch }) {
           {servicesViewAll && (
             <div className="mt-8 pt-8 border-t border-white/10">
               <h3 className="text-sm font-bold uppercase tracking-wider text-purple-300 mb-6">
-                All 8 Complete Digital Marketing Solutions
+                All Complete Digital Marketing Solutions
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {siteData.services.slice(4).map((srv, idx) => (

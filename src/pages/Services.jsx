@@ -9,6 +9,9 @@ import {
   UserCheck, 
   Megaphone, 
   Music, 
+  Vote,
+  Flag,
+  ShieldAlert,
   ArrowRight, 
   CheckCircle, 
   Sparkles, 
@@ -31,6 +34,8 @@ export default function Services({ onOpenEnquiry }) {
       case 'UserCheck': return <UserCheck className="w-7 h-7 text-amber-400" />;
       case 'Megaphone': return <Megaphone className="w-7 h-7 text-rose-400" />;
       case 'Music': return <Music className="w-7 h-7 text-fuchsia-400" />;
+      case 'Vote': return <Vote className="w-7 h-7 text-amber-400" />;
+      case 'Flag': return <Flag className="w-7 h-7 text-amber-400" />;
       default: return <Sparkles className="w-7 h-7 text-amber-400" />;
     }
   };
@@ -48,7 +53,7 @@ export default function Services({ onOpenEnquiry }) {
         <div className="text-center max-w-4xl mx-auto mb-20 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>PAGE 3 – OUR SERVICES</span>
+            <span>OUR SERVICES • VARDHAN MEDIA</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">
@@ -60,7 +65,7 @@ export default function Services({ onOpenEnquiry }) {
           </p>
 
           <p className="text-slate-300 text-base max-w-2xl mx-auto">
-            From high-conversion paid ads to cinematic reels and local SEO dominance, explore our 8 specialized digital solutions.
+            From high-conversion paid ads to election campaign management, cinematic reels and local SEO dominance, explore our specialized digital marketing solutions.
           </p>
         </div>
 
@@ -90,18 +95,38 @@ export default function Services({ onOpenEnquiry }) {
                   </div>
                 </div>
 
-                <h3 className="font-heading text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">
+                {service.category && (
+                  <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-amber-400 mb-1">
+                    {service.category}
+                  </span>
+                )}
+
+                <h3 className="font-heading text-2xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
                   {index + 1}. {service.title}
                 </h3>
+
+                {service.tagline && (
+                  <p className="text-xs sm:text-sm font-semibold text-amber-300/90 mb-3">
+                    {service.tagline}
+                  </p>
+                )}
 
                 <p className="text-slate-300 text-base leading-relaxed mb-4">
                   {service.fullDesc}
                 </p>
 
                 {service.platforms && (
-                  <div className="mb-6 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
+                  <div className="mb-5 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs">
                     <span className="text-amber-400 font-semibold">Platforms: </span>
                     <span className="text-slate-300">{service.platforms}</span>
+                  </div>
+                )}
+
+                {/* Important Compliance Notice */}
+                {service.complianceNotice && (
+                  <div className="mb-6 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200/95 flex items-start gap-2.5">
+                    <ShieldAlert className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                    <span className="leading-relaxed font-normal">{service.complianceNotice}</span>
                   </div>
                 )}
 
@@ -122,7 +147,7 @@ export default function Services({ onOpenEnquiry }) {
               </div>
 
               {/* Action */}
-              <div className="pt-6 border-t border-slate-800/80 flex items-center justify-between">
+              <div className="pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
                 <button
                   onClick={() => onOpenEnquiry(service.title)}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md shadow-amber-400/20 transition-all cursor-pointer"
@@ -131,14 +156,24 @@ export default function Services({ onOpenEnquiry }) {
                   <span>Inquire for {service.title}</span>
                 </button>
 
-                <a
-                  href={`https://wa.me/${siteData.contact.whatsappNumber}?text=${encodeURIComponent(`Hello Vardhan Media, I want to learn more about ${service.title}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-slate-400 hover:text-emerald-400 font-medium transition-colors"
-                >
-                  Quick WhatsApp →
-                </a>
+                {service.id === 'political-campaign-management' ? (
+                  <Link
+                    to="/election-campaign"
+                    className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                  >
+                    <span>Dedicated Campaign Page</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                ) : (
+                  <a
+                    href={`https://wa.me/${siteData.contact.whatsappNumber}?text=${encodeURIComponent(`Hello Vardhan Media, I want to learn more about ${service.title}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-slate-400 hover:text-emerald-400 font-medium transition-colors"
+                  >
+                    Quick WhatsApp →
+                  </a>
+                )}
               </div>
             </div>
           ))}
