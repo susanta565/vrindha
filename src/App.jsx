@@ -6,6 +6,7 @@ import EnquiryModal from './components/EnquiryModal';
 import SearchModal from './components/SearchModal';
 import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTop from './components/ScrollToTop';
+import PageTransition from './components/PageTransition';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -31,6 +32,7 @@ export default function App() {
 
   return (
     <Router>
+      <PageTransition />
       <ScrollToTop />
       <div className="min-h-screen bg-[#080616] text-white flex flex-col font-sans selection:bg-purple-500 selection:text-white">
         {/* Navigation Bar matching Reference */}

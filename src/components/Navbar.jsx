@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, ArrowRight, Sparkles, MessageCircle } from 'lucide-react';
+import { Menu, X, Search, ArrowRight, Sparkles, MessageCircle, Volume2, VolumeX } from 'lucide-react';
 import { siteData } from '../data/siteData';
+import { isSoundMuted, toggleSound, playTransitionSound } from '../utils/soundEffects';
 
 export default function Navbar({ onOpenEnquiry, onOpenSearch }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [isMuted, setIsMuted] = useState(isSoundMuted());
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleToggleSound = () => {
+    const nextMuted = toggleSound();
+    setIsMuted(nextMuted);
+    if (!nextMuted) {
+      playTransitionSound();
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,13 +46,17 @@ export default function Navbar({ onOpenEnquiry, onOpenSearch }) {
 
   const handleNavClick = (sectionId, path) => {
     setIsOpen(false);
-    if (location.pathname === '/') {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-        setActiveSection(sectionId);
-        return;
+    if (location.pathname === path) {
+      if (location.pathname === '/') {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          setActiveSection(sectionId);
+          return;
+        }
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
     navigate(path);
   };
@@ -104,6 +118,20 @@ export default function Navbar({ onOpenEnquiry, onOpenSearch }) {
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
+            {/* Sound FX Toggle Button */}
+            <button
+              onClick={handleToggleSound}
+              className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all cursor-pointer"
+              title={isMuted ? "Enable Page Transition Sound FX" : "Mute Sound FX"}
+              aria-label="Toggle Sound"
+            >
+              {isMuted ? (
+                <VolumeX className="w-4 h-4 text-slate-400" />
+              ) : (
+                <Volume2 className="w-4 h-4 text-amber-400 animate-pulse" />
+              )}
+            </button>
+
             {/* Search Glass Button */}
             <button
               onClick={onOpenSearch}
