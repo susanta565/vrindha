@@ -58,6 +58,8 @@ export default function Navbar({ onOpenEnquiry, onOpenSearch }) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    // Trigger transition sound immediately within user gesture for instant mobile playback
+    playTransitionSound();
     navigate(path);
   };
 

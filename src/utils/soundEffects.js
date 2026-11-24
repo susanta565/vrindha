@@ -1,8 +1,20 @@
-// Web Audio API Cinematic Sound Synthesizer for Vardhan Media
-let audioCtx = null;
-let isMuted = false;
+// Vardhan Media Transition Sound Manager
+// High-performance audio player supporting mobile (iOS Safari, Android Chrome) and desktop with zero latency
 
-// Check localStorage for saved sound preference
+const AUDIO_PATH_MP3 = '/transition-sound.mp3';
+const AUDIO_PATH_MPEG = '/audio_vardhan.mpeg';
+
+let audioCtx = null;
+let audioBuffer = null;
+let isAudioBufferLoading = false;
+let currentSourceNode = null;
+let currentHtmlAudio = null;
+let isMuted = false;
+let lastPlayTimestamp = 0;
+let hasInitialSoundPlayed = false;
+let isUnlocked = false;
+
+// Initialize mute state from localStorage
 if (typeof window !== 'undefined') {
   try {
     const saved = localStorage.getItem('vardhan_sound_enabled');
@@ -25,6 +37,9 @@ export function toggleSound() {
       localStorage.setItem('vardhan_sound_enabled', String(!isMuted));
     } catch (e) {}
   }
+  if (isMuted) {
+    stopCurrentPlayback();
+  }
   return isMuted;
 }
 
@@ -35,114 +50,186 @@ function getAudioContext() {
   if (!audioCtx) {
     audioCtx = new AudioCtx();
   }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(() => {});
-  }
   return audioCtx;
 }
 
-// Unlock AudioContext on first user interaction to comply with browser autoplay policies
-if (typeof window !== 'undefined') {
-  const unlock = () => {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
+// Pre-load and decode audio into Web Audio memory for 0ms delay
+async function loadAudioBuffer() {
+  if (typeof window === 'undefined' || audioBuffer || isAudioBufferLoading) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  isAudioBufferLoading = true;
+  try {
+    const response = await fetch(AUDIO_PATH_MP3).catch(() => fetch(AUDIO_PATH_MPEG));
+    if (!response || !response.ok) {
+      throw new Error('Failed to fetch transition audio');
     }
-    window.removeEventListener('click', unlock);
-    window.removeEventListener('keydown', unlock);
-    window.removeEventListener('touchstart', unlock);
+    const arrayBuffer = await response.arrayBuffer();
+    audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+  } catch (err) {
+    console.warn('Web Audio buffer decode note:', err);
+  } finally {
+    isAudioBufferLoading = false;
+  }
+}
+
+// Pre-created HTML5 Audio element for instant fallback
+function getHtmlAudioElement() {
+  if (typeof window === 'undefined') return null;
+  if (!currentHtmlAudio) {
+    currentHtmlAudio = new Audio();
+    currentHtmlAudio.src = AUDIO_PATH_MP3;
+    currentHtmlAudio.preload = 'auto';
+    currentHtmlAudio.volume = 0.9;
+    currentHtmlAudio.load();
+  }
+  return currentHtmlAudio;
+}
+
+// Stop any currently playing audio to prevent conflicts and overlapping echoes
+function stopCurrentPlayback() {
+  if (currentSourceNode) {
+    try {
+      currentSourceNode.stop(0);
+      currentSourceNode.disconnect();
+    } catch (e) {}
+    currentSourceNode = null;
+  }
+  if (currentHtmlAudio) {
+    try {
+      currentHtmlAudio.pause();
+      currentHtmlAudio.currentTime = 0;
+    } catch (e) {}
+  }
+}
+
+// Unlock audio pipeline for mobile iOS/Android
+function unlockMobileAudio() {
+  if (isUnlocked && hasInitialSoundPlayed) return;
+
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+
+  // Pre-load the buffer if not yet loaded
+  loadAudioBuffer();
+
+  const htmlAudio = getHtmlAudioElement();
+  if (htmlAudio) {
+    const primePromise = htmlAudio.play();
+    if (primePromise !== undefined) {
+      primePromise
+        .then(() => {
+          isUnlocked = true;
+          // If the initial opening transition sound was blocked by mobile browser autoplay policy,
+          // play it now on the user's first touch/interaction!
+          if (!hasInitialSoundPlayed && !isMuted) {
+            hasInitialSoundPlayed = true;
+            // Let the audio play as the opening sound!
+          } else {
+            htmlAudio.pause();
+            htmlAudio.currentTime = 0;
+          }
+        })
+        .catch(() => {
+          // Will unlock on subsequent user interaction
+        });
+    }
+  }
+}
+
+// Register global touch / interaction listeners for mobile devices
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAudioBuffer();
+      getHtmlAudioElement();
+    });
+  } else {
+    loadAudioBuffer();
+    getHtmlAudioElement();
+  }
+
+  const interactionEvents = ['touchstart', 'touchend', 'click', 'pointerdown'];
+  const handleFirstInteraction = () => {
+    unlockMobileAudio();
+    interactionEvents.forEach(evt => window.removeEventListener(evt, handleFirstInteraction, true));
   };
-  window.addEventListener('click', unlock, { once: true, passive: true });
-  window.addEventListener('keydown', unlock, { once: true, passive: true });
-  window.addEventListener('touchstart', unlock, { once: true, passive: true });
+
+  interactionEvents.forEach(evt => {
+    window.addEventListener(evt, handleFirstInteraction, { capture: true, passive: true });
+  });
 }
 
 /**
- * Plays a cinematic agency brand transition sound effect:
- * Layer 1: Warm cinematic sub-bass swell
- * Layer 2: Futuristic rising whoosh / frequency sweep
- * Layer 3: Crystalline harmonic shimmer / chime on reveal
+ * Plays the user's official transition sound effect for Vardhan Media
+ * Guarantees zero latency, prevents overlapping echoes, and works on mobile & desktop.
  */
 export function playTransitionSound() {
-  if (isMuted) return;
+  if (isMuted || typeof window === 'undefined') return;
+
+  const nowMs = Date.now();
+  // Prevent duplicate triggering within 140ms
+  if (nowMs - lastPlayTimestamp < 140) {
+    return;
+  }
+  lastPlayTimestamp = nowMs;
+
+  // Stop any previous instance to avoid conflicts and duplicate sound
+  stopCurrentPlayback();
+
+  const ctx = getAudioContext();
+
+  // Try Web Audio API first if buffer is ready (0ms latency, best performance)
+  if (ctx && audioBuffer) {
+    try {
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+
+      const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+
+      source.buffer = audioBuffer;
+      gainNode.gain.setValueAtTime(0.9, ctx.currentTime);
+
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      currentSourceNode = source;
+      source.onended = () => {
+        if (currentSourceNode === source) {
+          currentSourceNode = null;
+        }
+      };
+
+      source.start(0);
+      hasInitialSoundPlayed = true;
+      return;
+    } catch (err) {
+      console.warn('Web Audio buffer playback failed, falling back to HTML5 Audio:', err);
+    }
+  }
+
+  // Fallback: HTML5 Audio element
   try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    const now = ctx.currentTime;
-
-    // Master Gain Node
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.35, now);
-    masterGain.connect(ctx.destination);
-
-    // ==========================================
-    // Layer 1: Cinematic Sub-Bass Swell
-    // ==========================================
-    const subOsc = ctx.createOscillator();
-    const subGain = ctx.createGain();
-    subOsc.type = 'sine';
-    subOsc.frequency.setValueAtTime(65, now);
-    subOsc.frequency.exponentialRampToValueAtTime(36, now + 0.6);
-
-    subGain.gain.setValueAtTime(0.001, now);
-    subGain.gain.linearRampToValueAtTime(0.38, now + 0.12);
-    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-
-    subOsc.connect(subGain);
-    subGain.connect(masterGain);
-    subOsc.start(now);
-    subOsc.stop(now + 0.75);
-
-    // ==========================================
-    // Layer 2: Futuristic Rising Whoosh
-    // ==========================================
-    const whooshOsc = ctx.createOscillator();
-    const whooshGain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    whooshOsc.type = 'triangle';
-    whooshOsc.frequency.setValueAtTime(130, now);
-    whooshOsc.frequency.exponentialRampToValueAtTime(540, now + 0.35);
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(280, now);
-    filter.frequency.exponentialRampToValueAtTime(1900, now + 0.35);
-    filter.frequency.exponentialRampToValueAtTime(350, now + 0.65);
-
-    whooshGain.gain.setValueAtTime(0.001, now);
-    whooshGain.gain.linearRampToValueAtTime(0.22, now + 0.2);
-    whooshGain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
-
-    whooshOsc.connect(filter);
-    filter.connect(whooshGain);
-    whooshGain.connect(masterGain);
-    whooshOsc.start(now);
-    whooshOsc.stop(now + 0.7);
-
-    // ==========================================
-    // Layer 3: Crystalline Shimmer / Chime (Reveal)
-    // ==========================================
-    const chimeFrequencies = [587.33, 880, 1174.66, 1760]; // D5, A5, D6, A6 (Ethereal major chords)
-    chimeFrequencies.forEach((freq, i) => {
-      const chimeOsc = ctx.createOscillator();
-      const chimeGain = ctx.createGain();
-
-      chimeOsc.type = 'sine';
-      chimeOsc.frequency.setValueAtTime(freq, now + 0.22 + (i * 0.035));
-
-      const startTime = now + 0.22 + (i * 0.035);
-      chimeGain.gain.setValueAtTime(0.001, startTime);
-      chimeGain.gain.linearRampToValueAtTime(0.09 / (i + 1), startTime + 0.04);
-      chimeGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.55);
-
-      chimeOsc.connect(chimeGain);
-      chimeGain.connect(masterGain);
-      chimeOsc.start(startTime);
-      chimeOsc.stop(startTime + 0.6);
-    });
-
+    const htmlAudio = getHtmlAudioElement();
+    if (htmlAudio) {
+      htmlAudio.currentTime = 0;
+      const playPromise = htmlAudio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            hasInitialSoundPlayed = true;
+          })
+          .catch((err) => {
+            console.warn('Playback waiting for user gesture on mobile:', err);
+          });
+      }
+    }
   } catch (err) {
-    // Graceful silent handling if browser blocks or restricts audio
-    console.warn('Audio playback note:', err);
+    console.warn('Audio playback error:', err);
   }
 }
