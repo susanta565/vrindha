@@ -13,6 +13,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { siteData } from '../data/siteData';
+import { saveEnquiryToSupabase } from '../services/enquiryService';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -27,14 +28,21 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      await saveEnquiryToSupabase({
+        ...formData,
+        source: 'Contact Page Form'
+      });
+    } catch (err) {
+      console.warn('Contact submission error:', err);
+    } finally {
       setLoading(false);
       setSubmitted(true);
-    }, 500);
+    }
   };
 
   const handleWhatsAppSend = () => {

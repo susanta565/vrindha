@@ -38,6 +38,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { siteData } from '../data/siteData';
+import { saveEnquiryToSupabase } from '../services/enquiryService';
 
 export default function Home({ onOpenEnquiry, onOpenSearch }) {
   // Canvas & Scroll-Based Frame Animation
@@ -174,13 +175,20 @@ export default function Home({ onOpenEnquiry, onOpenSearch }) {
     onOpenSearch();
   };
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
-    setTimeout(() => {
+    try {
+      await saveEnquiryToSupabase({
+        ...contactForm,
+        source: 'Home Page Contact Form'
+      });
+    } catch (err) {
+      console.warn('Home contact submission error:', err);
+    } finally {
       setFormLoading(false);
       setFormSubmitted(true);
-    }, 500);
+    }
   };
 
   const handleWhatsAppSend = () => {

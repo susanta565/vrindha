@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Send, CheckCircle2, Sparkles, MessageCircle } from 'lucide-react';
 import { siteData } from '../data/siteData';
+import { saveEnquiryToSupabase } from '../services/enquiryService';
 
 export default function EnquiryModal({ isOpen, onClose, preselectedService = '' }) {
   const [formData, setFormData] = useState({
@@ -17,13 +18,20 @@ export default function EnquiryModal({ isOpen, onClose, preselectedService = '' 
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await saveEnquiryToSupabase({
+        ...formData,
+        source: 'Get a Quote Modal'
+      });
+    } catch (err) {
+      console.warn('Submission handler error:', err);
+    } finally {
       setLoading(false);
       setSubmitted(true);
-    }, 500);
+    }
   };
 
   const handleWhatsAppForward = () => {
